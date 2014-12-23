@@ -3,7 +3,7 @@ package gps.sp.ftp;
 import org.springframework.retry.RecoveryCallback;
 import org.springframework.retry.RetryContext;
 
-public class MyHandlerAdvice implements RecoveryCallback {
+public class MyHandlerAdvice implements RecoveryCallback<Object> {
 
 	public MyHandlerAdvice() {
 		// TODO Auto-generated constructor stub
