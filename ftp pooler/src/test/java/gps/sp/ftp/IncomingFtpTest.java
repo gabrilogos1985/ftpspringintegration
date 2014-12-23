@@ -1,6 +1,6 @@
 package gps.sp.ftp;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
@@ -9,16 +9,15 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.PollableChannel;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:ftp.input.output.xml")
+@ContextConfiguration("classpath:test/ftp-input.xml")
 public class IncomingFtpTest {
 	@Autowired
-	@Qualifier("facturasIncome")
+	@Qualifier("incomeFiles")
 	PollableChannel inFtpChannel;
 
 	@Test

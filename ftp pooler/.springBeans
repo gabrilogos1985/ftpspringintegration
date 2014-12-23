@@ -10,6 +10,7 @@
 		<config>src/main/resources/ftp.input.output.xml</config>
 		<config>src/main/resources/publish-subscribe.xml</config>
 		<config>src/main/resources/gateway-bidrectional.xml</config>
+		<config>src/main/resources/test/ftp-input.xml</config>
 	</configs>
 	<autoconfigs>
 	</autoconfigs>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-ftp="http://www.springframework.org/schema/integration/ftp"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+		http://www.springframework.org/schema/integration/ftp http://www.springframework.org/schema/integration/ftp/spring-integration-ftp-4.1.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-4.1.xsd">
+
+	<context:property-placeholder location="classpath:ftp.properties" />
+
+	<bean id="ftpSessionFactory"
+		class="org.springframework.integration.ftp.session.DefaultFtpSessionFactory">
+		<property name="host" value="${host}" />
+		<property name="port" value="${availableServerPort}" />
+		<property name="username" value="${userid}" />
+		<property name="password" value="${password}" />
+	</bean>
+	<bean id="cachingSessionFactory"
+		class="org.springframework.integration.file.remote.session.CachingSessionFactory">
+		<constructor-arg ref="ftpSessionFactory" />
+		<constructor-arg value="10" />
+		<property name="sessionWaitTimeout" value="10000" />
+	</bean>
+	<int:channel id="inbound1" />
+	<int-ftp:outbound-gateway id="ftpgateway"
+		local-directory="work/download" auto-create-local-directory="true"
+		session-factory="cachingSessionFactory" request-channel="inbound1"
+		command="get" expression="payload" reply-channel="connector" >
+		<int-ftp:request-handler-advice-chain>
+			<ref bean="retrier" />
+		</int-ftp:request-handler-advice-chain>
+	</int-ftp:outbound-gateway>
+
+	<int-ftp:outbound-gateway id="ftpgatewayDelete"
+		local-directory="work/download" session-factory="cachingSessionFactory"
+		request-channel="connector" command="rm" expression="headers['path']"
+		reply-channel="channel2">
+	</int-ftp:outbound-gateway>
+
+	<int:handler-retry-advice id="retrier"
+		max-attempts="4">
+		<int:exponential-back-off initial="1000"
+			multiplier="2.0" maximum="60000" />
+	</int:handler-retry-advice>
+	<int:channel id="connector"/>
+
+	<int:channel id="channel2">
+		<int:queue />
+	</int:channel>
+</beans>
