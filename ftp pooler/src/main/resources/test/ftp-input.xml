@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-ftp="http://www.springframework.org/schema/integration/ftp"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/integration/ftp http://www.springframework.org/schema/integration/ftp/spring-integration-ftp-4.1.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-4.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+
+	<context:property-placeholder location="classpath:ftp.properties" />
+	<bean id="ftpSessionFactory"
+		class="org.springframework.integration.ftp.session.DefaultFtpSessionFactory">
+		<property name="host" value="${host}" />
+		<property name="port" value="${availableServerPort}" />
+		<property name="username" value="${userid}" />
+		<property name="password" value="${password}" />
+	</bean>
+	<bean id="cachingSessionFactory"
+		class="org.springframework.integration.file.remote.session.CachingSessionFactory">
+		<constructor-arg ref="ftpSessionFactory" />
+		<constructor-arg value="10" />
+		<property name="sessionWaitTimeout" value="1000" />
+	</bean>
+
+	<int-ftp:inbound-channel-adapter
+		local-directory="work/facturasLocal" channel="incomeFiles"
+		session-factory="cachingSessionFactory" remote-directory="facturas"
+		id="incomeFtpChannel">
+		<int:poller fixed-delay="10000" />
+	</int-ftp:inbound-channel-adapter>
+
+	<int:channel id="incomeFiles">
+		<int:queue />
+	</int:channel>
+</beans>
