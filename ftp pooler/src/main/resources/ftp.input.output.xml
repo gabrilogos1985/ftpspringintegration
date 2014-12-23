@@ -28,14 +28,13 @@
 		channel="ftpChannel" remote-directory="layout" session-factory="cachingSessionFactory"
 		remote-filename-generator-expression="'a'" />
 	<int-ftp:inbound-channel-adapter
-		local-directory="C:\Users\Sony\Documents\work\facturasLocal" channel="outftpToQueue"
-		session-factory="cachingSessionFactory" remote-directory="facturas"
-		id="incomeFtpChannel">
+		local-directory="C:\Users\Sony\Documents\work\facturasLocal" session-factory="cachingSessionFactory" remote-directory="facturas"
+		id="incomeFtpChannel" channel="facturasQueue">
 		<int:poller fixed-delay="1000" />
 	</int-ftp:inbound-channel-adapter>
 	
 
-	<int:bridge id="outftpToQueue" output-channel="facturasQueue"></int:bridge>
+	<int:bridge id="outftpToQueue"></int:bridge>
 	<int:publish-subscribe-channel id="facturasQueue"/>
 
 
