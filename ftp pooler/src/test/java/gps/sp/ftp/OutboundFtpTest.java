@@ -23,25 +23,26 @@ public class OutboundFtpTest {
 
 	@Test
 	public void test() throws Exception {
-		
+
 		ExecutorService exec = Executors.newCachedThreadPool();
-		for(int counter=0;counter<30;counter++)
+		for (int counter = 0; counter < 30; counter++)
 			exec.execute(new Runnable() {
-				
+
 				@Override
 				public void run() {
-					Message<String> message = MessageBuilder
-							.withPayload("Hello").build();
+					Message<String> message = MessageBuilder.withPayload(
+							"Hello").build();
 					try {
 						Thread.sleep(50);
 					} catch (InterruptedException e) {
-					  Thread.currentThread().interrupt();
+						Thread.currentThread().interrupt();
 					}
-					outFtpChannel.send(message);
+					System.out.println("E N VI A D O: "
+							+ outFtpChannel.send(message));
 				}
 			});
 		exec.shutdown();
-		exec.awaitTermination(10, TimeUnit.SECONDS);
+		exec.awaitTermination(160, TimeUnit.SECONDS);
 	}
 
 }

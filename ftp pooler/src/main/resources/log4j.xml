@@ -12,6 +12,10 @@
 
 	<!-- Loggers -->
 	<logger name="org.springframework.integration">
+		<level value="WARN" />
+	</logger>
+
+	<logger name="org.springframework.integration.file">
 		<level value="debug" />
 	</logger>
 

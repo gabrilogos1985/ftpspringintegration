@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:ftp.input.output.xml")
+@Ignore("")
 public class FtpIncomeDispatcherTest {
 
-	@Autowired
+	@Autowired 
 	@Qualifier("publish-subscribe-file")
 	PublishSubscribeChannel inFtpChannel;
 

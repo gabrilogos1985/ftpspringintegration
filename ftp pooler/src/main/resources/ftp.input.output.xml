@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:int-ftp="http://www.springframework.org/schema/integration/ftp"
-	xmlns:context="http://www.springframework.org/schema/context"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:int-ftp="http://www.springframework.org/schema/integration/ftp" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:int="http://www.springframework.org/schema/integration"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
@@ -10,31 +8,30 @@
 		http://www.springframework.org/schema/integration/ftp http://www.springframework.org/schema/integration/ftp/spring-integration-ftp.xsd">
 
 	<context:property-placeholder location="classpath:ftp.properties" />
-	<bean id="ftpSessionFactory"
-		class="org.springframework.integration.ftp.session.DefaultFtpSessionFactory">
+	<bean id="ftpSessionFactory" class="org.springframework.integration.ftp.session.DefaultFtpSessionFactory">
 		<property name="host" value="${host}" />
 		<property name="port" value="${availableServerPort}" />
 		<property name="username" value="${userid}" />
 		<property name="password" value="${password}" />
+		<property name="clientMode" value="2" />
 	</bean>
-	<bean id="cachingSessionFactory"
-		class="org.springframework.integration.file.remote.session.CachingSessionFactory">
+	<bean id="cachingSessionFactory" class="org.springframework.integration.file.remote.session.CachingSessionFactory">
 		<constructor-arg ref="ftpSessionFactory" />
 		<constructor-arg value="10" />
-		<property name="sessionWaitTimeout" value="10000" />
+		<property name="sessionWaitTimeout" value="60000" />
 	</bean>
 	<int:channel id="ftpChannel" />
 	<int-ftp:outbound-channel-adapter id="ftpOutbound"
-		channel="ftpChannel" remote-directory="layout" session-factory="cachingSessionFactory"
-		remote-filename-generator-expression="'a'" />
-	<int-ftp:inbound-channel-adapter
-		local-directory="C:\Users\Sony\Documents\work\facturasLocal" session-factory="cachingSessionFactory" remote-directory="facturas"
-		id="incomeFtpChannel" channel="facturasQueue">
-		<int:poller fixed-delay="1000" />
-	</int-ftp:inbound-channel-adapter>
-	
+		channel="ftpChannel" remote-directory="${remoteDirectory}" session-factory="cachingSessionFactory"
+		remote-filename-generator-expression="'a.writing'" />
+	<!-- <int-ftp:inbound-channel-adapter -->
+	<!-- local-directory="C:\Users\Sony\Documents\work\facturasLocal" session-factory="cachingSessionFactory" 
+		remote-directory="facturas" -->
+	<!-- id="incomeFtpChannel" channel="facturasQueue"> -->
+	<!-- <int:poller fixed-delay="1000" /> -->
+	<!-- </int-ftp:inbound-channel-adapter> -->
 
-	<int:bridge id="outftpToQueue"></int:bridge>
+
 	<int:publish-subscribe-channel id="facturasQueue"/>
 
 
@@ -43,7 +40,7 @@
 	<int:channel id="requestChannel" />
 	<int:service-activator input-channel="requestChannel">
 		<bean class="gps.sp.ftp.FtpPublisherConsumer" id="ftpPublishConsumer">
-			<property ref="ftpChannel" name="ftpUploader"/>
+			<property ref="ftpChannel" name="ftpUploader" />
 		</bean>
 	</int:service-activator>
 

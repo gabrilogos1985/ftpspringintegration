@@ -2,6 +2,7 @@ package gps.sp.ftp;
 
 import static org.junit.Assert.*;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,8 @@ public class PublishSubscribeTeest {
 	@Autowired
 	Customer customer;
 
-	@Test
+	@Test()
+	@Ignore("Sprite pourposes")
 	public void test() throws Exception {
 		while (true) {
 			customer.placeOrder();
